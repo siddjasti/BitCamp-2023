@@ -22,7 +22,7 @@ def answer_call():
     # Start our TwiML response
     resp = VoiceResponse()
     # Read a message aloud to the caller
-    resp.say("Hello there friend!", voice='Polly.Aditi')
+    resp.say("Hello there friend!", voice='alice')
 
     return str(resp)
 
@@ -42,15 +42,5 @@ def record():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
-
-@app.route("/call", methods=['GET', 'POST'])
-def make_call():
-    phone_call = client.calls.create(
-                        record=True,
-                        url='http://demo.twilio.com/docs/voice.xml',
-                        to='+19138089997',
-                        from_='+15075744740'
-                    )
-
 
 
