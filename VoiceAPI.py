@@ -5,9 +5,16 @@ from twilio.twiml.voice_response import VoiceResponse
 from flask import Flask
 app = Flask(__name__)
 
+with open("key.json", "r") as file:
+    data = json.load(file)
+
+account_sid = data["Account_SID"]
+auth_token = data["Auth_Token"]
+client = Client(account_sid, auth_token)
+
 @app.route("/")
 def hello():
-    return "Hello from Sidd!"
+    return "Default Page for Application"
 
 @app.route("/answer", methods=['GET', 'POST'])
 def answer_call():
@@ -15,30 +22,35 @@ def answer_call():
     # Start our TwiML response
     resp = VoiceResponse()
     # Read a message aloud to the caller
-    resp.say("Aadit has ADHD and is in love with akansha", voice='Polly.Aditi')
+    resp.say("Hello there friend!", voice='Polly.Aditi')
 
     return str(resp)
+
+@app.route("/record", methods=['GET', 'POST'])
+def record():
+    """Returns TwiML which prompts the caller to record a message"""
+    # Start our TwiML response
+    response = VoiceResponse()
+
+    # Use <Say> to give the caller some instructions
+    response.say('Hey we are currently recording')
+
+    # Use <Record> to record the caller's message
+    response.record(timeout = 60)
+
+    return str(response)
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
 
+@app.route("/call", methods=['GET', 'POST'])
+def make_call():
+    phone_call = client.calls.create(
+                        record=True,
+                        url='http://demo.twilio.com/docs/voice.xml',
+                        to='+19138089997',
+                        from_='+15075744740'
+                    )
 
 
-
-
-
-
-#with open("key.json", "r") as file:
-#    data = json.load(file)
-
-#account_sid = data["Account_SID"]
-#auth_token = data["Auth_Token"]
-
-#client = Client(account_sid, auth_token)
-
-#message = client.messages.create(
-    #to="+9138089997", 
-    #from_="+9134613920",
-    #body="Hi prina pad")
-#print(message.sid)
 
